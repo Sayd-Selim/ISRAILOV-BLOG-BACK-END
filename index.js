@@ -57,7 +57,7 @@ app.get('/auth/me',checkAuth, getMe)
 // тут будет запрос связанный с multer-ом
 
 app.post('/upload', upload.single('image'), (req, res) => {
-    console.log('req.file', req.file);
+
     res.json({
         url: `/uploads/${req.file.originalname}`
     })
@@ -74,7 +74,7 @@ app.patch('/posts/:id/edit', checkAuth, handleValidationErrors, update)
 
 
 app.listen(process.env.PORT || 3001, () => {
-    console.log(`Server запущен на порту REACT_APP_API_URL`);
+    console.log(`Server запущен на порту ${process.env.PORT}`);
 });
 
 
