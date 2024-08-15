@@ -70,7 +70,7 @@ app.get('/tags', getLastTags)
 app.get('/posts/:id', getOne)
 app.post('/posts', checkAuth,  postCreateValidation, handleValidationErrors, create)
 app.delete('/posts/:id', checkAuth, remove)
-app.patch('/posts/:id/edit', checkAuth, handleValidationErrors, update)
+app.patch('/posts/:id/edit', checkAuth,  update)
 
 
 app.listen(process.env.PORT || 3001, () => {
