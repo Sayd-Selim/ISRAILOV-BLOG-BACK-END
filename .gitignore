@@ -1,0 +1,54 @@
+# node_modules - папка с зависимостями, устанавливаемыми npm
+node_modules/
+
+# Папка с временными файлами и папками
+*.log
+*.tmp
+*.temp
+
+# Файлы и папки, специфичные для операционных систем
+.DS_Store
+Thumbs.db
+
+# Файлы и папки, специфичные для IDE и текстовых редакторов
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+
+# Конфиденциальные файлы
+.env
+.env.local
+.env.*.local
+
+# Папка сборки и компиляции
+dist/
+build/
+
+# Файлы и папки, генерируемые системами сборки и тестирования
+coverage/
+*.lcov
+*.nyc_output
+
+# Локальные конфигурационные файлы
+*.sublime-project
+*.sublime-workspace
+*.project
+*.classpath
+*.settings/
+
+# Файлы и папки, генерируемые сборщиками и инструментами
+*.pem
+*.key
+
+# Глобальные настройки для npm
+package-lock.json
+npm-debug.log*
+yarn-error.log
+yarn-debug.log*
+pnpm-debug.log*
+
+# Файлы, генерируемые CI/CD системами
+*.ci
+*.pipeline
