@@ -24,7 +24,7 @@ export const register = async (req, res) => {
         const document = new UserModal({
             email: req.body.email,
             fullName: req.body.fullName,
-            avatarUrl: req.file ? `/uploads${req.file.filename}` : '', 
+            avatarUrl: req.file ? `/uploads/${req.file.filename}` : '', 
             passwordHash: hash,
         });
 
