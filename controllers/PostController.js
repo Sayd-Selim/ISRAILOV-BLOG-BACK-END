@@ -7,7 +7,7 @@ export const getLastTags = async (req, res) => {
       const posts = await PostModel.find().limit(5).exec();
 
       const tags = posts.map(obj => obj.tags).flat().slice(0, 5)
-            res.json(tags);
+        res.json(tags);
 
     } catch (err) {
       console.error(err);
@@ -21,6 +21,11 @@ export const getLastTags = async (req, res) => {
 export const getAll = async (req, res) => {
     try {
       const posts = await PostModel.find().populate('user').exec();
+    //  1) ишет ту схему где есть ключ user и берет его ключ ref
+    // 2) потом ишет модель который зарегистрирован с этим ключом из ref чтобы потом передать его данные в user из постов
+    // 3) потом берет то что вернул метод find() то есть нашу базу данных (а он вернул нам наши посты) и запихаем их в ключ user
+
+    // резюмируя: populate() изпользуется чтобы взять данные из одной базы данных и передать их в другой
       res.json(posts);
     } catch (err) {
       console.error(err);
@@ -36,7 +41,7 @@ export const getOne = async (req, res) => {
 
         const doc = await PostModel.findOneAndUpdate(
             { _id: postId },
-            { $inc: { viewsCount: 1 } },
+            { $inc: { viewsCount: 1,  } },
             { returnDocument: 'after' }
         ).populate('user'); // Переместили populate сюда
 
@@ -64,6 +69,7 @@ export const create = async (req, res) => {
             text: req.body.text,
             imageUrl: req.body.imageUrl,
             tags: req.body.tags,
+            comments:[],
             user: req.userId
         })
 
@@ -145,4 +151,16 @@ export const update = async (req, res) => {
             message: 'Не удалось обновить статью !'
         })
     }
+}
+
+export const addComment = async (req, res) => {
+    const postId = req.params.id
+
+    const postFromMongoDB = await PostModel.findByIdAndUpdate(
+        {_id: postId},
+        {comments: req.body.comment},
+        {returnDocument: 'before'}
+    )
+
+    res.json(postFromMongoDB)
 }

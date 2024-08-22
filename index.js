@@ -2,7 +2,7 @@ import express from 'express';
 import {loginValidation, postCreateValidation, registerValidation} from './validations.js';
 import checkAuth from './utils/checkAuth.js';
 import { getMe, login, mongoDB, register } from './controllers/UserController.js';
-import { create, getAll, getLastTags, getOne, remove, update } from './controllers/PostController.js';
+import { addComment, create, getAll, getLastTags, getOne, remove, update, deleteComment } from './controllers/PostController.js';
 import multer from 'multer';
 import handleValidationErrors from './utils/handleValidationErrors.js';
 import cors from 'cors'
@@ -69,6 +69,8 @@ app.get('/posts', getAll)
 app.get('/tags', getLastTags)
 app.get('/posts/:id', getOne)
 app.post('/posts', checkAuth,  postCreateValidation, handleValidationErrors, create)
+app.post('/posts/:id/addComment', checkAuth, addComment)
+app.post('/posts/:id/deleteComment', checkAuth, deleteComment)
 app.delete('/posts/:id', checkAuth, remove)
 app.patch('/posts/:id/edit', checkAuth,  update)
 
