@@ -15,60 +15,40 @@ export const mongoDB = () => (async () => {
 
 
 export const register = async (req, res) => {
-
     try {
-        
-        const password = req.body.password
-        const salt = await bcrypt.genSalt(10)
-        const Hash = await bcrypt.hash(password, salt)
+
+        const password = req.body.password;
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
 
         const document = new UserModal({
             email: req.body.email,
             fullName: req.body.fullName,
-            avatarUrl: req.body.avatarUrl,
-            passwordHash: Hash 
-        })
+            avatarUrl: req.file ? `/uploads${req.file.filename}` : '', 
+            passwordHash: hash,
+        });
 
-
-        const user = await document.save()
-
+        const user = await document.save();
 
         const token = jwt.sign({
             _id: user._id
-        }, process.env.JWT_SECRET, {
+        }, 'secret', {
             expiresIn: '30d'
-        })
+        });
 
-        const {
-            passwordHash,
-            ...userData
-        } = user._doc
-
-        // тут мы вытаскиваем пароль хешированный, потому что, не нужно ее возвращать клиенту,
-        // и создаем переменную userData и сохраняем туда все остальное из объекта user._doc
-        // user объект и _doc тоже объект в user-e
+        const { passwordHash, ...userData } = user._doc;
 
         res.json({
             ...userData,
             token
-        })
+        });
 
     } catch (error) {
         res.status(500).json({
-            message: 'Что-то пошло не так ! не удалось зарегистрироваться !'
-        })
+            message: 'Что-то пошло не так! Не удалось зарегистрироваться!'
+        });
     }
-
-
-
-
-    /*
-    UserModal сохраняет объект который передан ей первым параметром
-     в переменную где она была вызвана, и отдельно создает метод (save, find, и т.д)
-    */
-
-    // Здесь нужно добавить логику обработки успешной регистрации
-}
+};
 
 export const login = async (req, res) => {
     try {

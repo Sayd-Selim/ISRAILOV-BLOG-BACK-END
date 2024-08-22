@@ -47,7 +47,7 @@ const upload = multer({storage})
 
 app.use(express.json());
 
-app.post('/auth/register', registerValidation, handleValidationErrors,  register);
+app.post('/auth/register', registerValidation, upload.single('image'), register);
 
 app.post('/auth/login', loginValidation, handleValidationErrors, login)
 
