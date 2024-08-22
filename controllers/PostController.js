@@ -154,13 +154,46 @@ export const update = async (req, res) => {
 }
 
 export const addComment = async (req, res) => {
-    const postId = req.params.id
+    try {
+        const postId = req.params.id
+        const {comments} = await PostModel.findById(postId)
+        await PostModel.findByIdAndUpdate(
+            {_id: postId},
+            {comments: [...comments, req.body]},
+            {returnDocument: 'after'}
+        ).populate('user')
 
-    const postFromMongoDB = await PostModel.findByIdAndUpdate(
-        {_id: postId},
-        {comments: req.body.comment},
-        {returnDocument: 'before'}
-    )
-
-    res.json(postFromMongoDB)
+        res.json({message: `${req.body.authorСomment.fullName} ваша комментария успешна добавлена !`})
+    } catch (error) {
+        res.json({Error: `${req.body.authorСomment.fullName} произошла ошибка при добавлении вашего комментария !`, error})
+    }
 }
+
+export const deleteComment = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { commentId } = req.body; // Получаем commentId из тела запроса
+
+        // Убедитесь, что commentId передан
+        if (!commentId) {
+            return res.status(400).json({ message: "Не указан commentId" });
+        }
+
+        // Обновляем пост, удаляя комментарий по его идентификатору
+        const postFromMongoDB = await PostModel.findByIdAndUpdate(
+            postId,
+            {
+                $pull: { comments: { commentId: commentId } }
+            },
+            { returnDocument: 'after'} // Возвращаем обновленный документ
+        ).populate('user');
+
+        if (!postFromMongoDB) {
+            return res.status(404).json({ message: "Пост не найден" });
+        }
+
+        res.json(postFromMongoDB);
+    } catch (error) {
+        res.status(500).json({ message: "Не удалось удалить комментарий", error });
+    }
+};
