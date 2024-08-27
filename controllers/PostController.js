@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import PostModel from "../models/Post.js"
-
+import UserModel from "../models/User.js";
 
 export const getLastTags = async (req, res) => {
     try {
