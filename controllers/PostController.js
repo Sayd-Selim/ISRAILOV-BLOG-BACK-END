@@ -197,3 +197,43 @@ export const deleteComment = async (req, res) => {
         res.status(500).json({ message: "Не удалось удалить комментарий", error });
     }
 };
+
+export const addLike = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const OnChecked_orr_OffChecked = req.body.checked; // проверяю был клик на лайк или убран
+
+        // добавляю лайк или убираю лайк с поста
+        const post = await PostModel.findByIdAndUpdate(
+            {_id: postId},
+            { $inc: { like: !OnChecked_orr_OffChecked ? 1 : -1 } },
+            { returnDocument: 'after' }
+        );
+
+        if (!post) {
+            return res.status(404).json({ message: 'Пост не найден' });
+        }
+
+        // вытаскиваю из базы того кто зашел в аккаунт
+        const user = await UserModel.findById(req.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+
+        // обновляю список понравившихся постов
+        const updateUser = await UserModel.findByIdAndUpdate(
+            {_id: req.userId},
+            !OnChecked_orr_OffChecked
+                ? { $push: { likedPosts: {postId: post._id, pressed: true},} }  // добавляю пост в массив
+                : { $pull: { likedPosts: {postId: post._id} } }, // убираю пост из массива
+            { returnDocument: 'after' }
+        );
+
+        res.json({ message: 'Лайк обновлен!', post, user: updateUser });
+
+    } catch (error) {
+        console.error('Ошибка при добавлении лайка:', error);
+        res.status(500).json({ message: 'Не удалось обновить лайк' });
+    }
+};
