@@ -10,7 +10,7 @@ import fs from 'fs'
 
 import dotenv from 'dotenv';
 dotenv.config();
-mongoDB()
+// mongoDB()
 
 const app = express();
 
